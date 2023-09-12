@@ -61,31 +61,32 @@ app.delete('/api/persons/:id', (request, response) => {
   response.status(204).end()
 })
 
-const generateId = () => {
-  const maxId = notes.length > 0
-    ? Math.max(...notes.map(n => n.id))
-    : 0
-  return maxId + 1
-}
-
-app.post('/api/notes', (request, response) => {
+app.post('/api/persons', (request, response) => {
   const body = request.body
 
-  if (!body.content) {
+  if (!body.number) {
     return response.status(400).json({ 
-      error: 'content missing' 
+      error: 'number missing' 
+    })
+  }else if(!body.name){
+    return response.status(400).json({ 
+      error: 'name missing' 
+    })
+  }else if(persons.some((person) => person.name.toLowerCase() === body.name.toLowerCase() )){
+    return response.status(400).json({ 
+      error: 'name already exists' 
     })
   }
 
-  const note = {
-    content: body.content,
-    important: body.important || false,
-    id: generateId(),
+  const person = {
+    id: Math.floor(Math.random() * 1000000),
+    name: body.name,
+    number: body.number
   }
 
-  notes = notes.concat(note)
+  persons = persons.concat(person)
 
-  response.json(note)
+  response.json(person)
 })
 
 const PORT = 3001
