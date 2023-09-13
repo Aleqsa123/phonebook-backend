@@ -1,9 +1,26 @@
 import express from 'express';
+import morgan from 'morgan';
 
+
+//Middleware before middleware and routes
 const app = express();
 
 app.use(express.json());
 
+//Middleware after middleware and before routes
+/*const requestLogger = (request, response, next) => {
+  console.log('Method:', request.method)
+  console.log('Path:  ', request.path)
+  console.log('Body:  ', request.body)
+  console.log('---')
+  next()
+}
+
+app.use(requestLogger)*/
+
+app.use(morgan('tiny'))
+
+//Data
 let persons = [
     { 
       "id": 1,
@@ -27,6 +44,7 @@ let persons = [
     }
 ]
 
+//Routes
 app.get('/', (request, response) => {
   response.send('<h1>Hello World!</h1>')
 })
@@ -74,7 +92,7 @@ app.post('/api/persons', (request, response) => {
     })
   }else if(persons.some((person) => person.name.toLowerCase() === body.name.toLowerCase() )){
     return response.status(400).json({ 
-      error: 'name already exists' 
+      error: 'name must be unique' 
     })
   }
 
@@ -88,6 +106,13 @@ app.post('/api/persons', (request, response) => {
 
   response.json(person)
 })
+
+//Middleware after routes
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+
+app.use(unknownEndpoint)
 
 const PORT = 3001
 app.listen(PORT)
