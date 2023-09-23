@@ -1,23 +1,15 @@
 import express from 'express';
 import morgan from 'morgan';
-
+import cors from 'cors';
 
 //Middleware before middleware and routes
 const app = express();
 
 app.use(express.json());
 
-//Middleware after middleware and before routes
-/*const requestLogger = (request, response, next) => {
-  console.log('Method:', request.method)
-  console.log('Path:  ', request.path)
-  console.log('Body:  ', request.body)
-  console.log('---')
-  next()
-}
+app.use(cors());
 
-app.use(requestLogger)*/
-
+//Morgan API request logger
 morgan.token('body', (req, res) => JSON.stringify(req.body));
 app.use(morgan(':method :url :status :response-time ms - :res[content-length] :body'));
 
@@ -115,6 +107,7 @@ const unknownEndpoint = (request, response) => {
 
 app.use(unknownEndpoint)
 
-const PORT = 3001
-app.listen(PORT)
-console.log(`Server running on port ${PORT}`)
+const PORT = process.env.PORT || 3001
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`)
+})
