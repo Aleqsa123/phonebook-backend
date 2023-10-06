@@ -9,7 +9,7 @@ app.use(express.json());
 
 app.use(cors());
 
-app.use(express.static('build'))
+app.use(express.static('build'));
 
 //Morgan API request logger
 morgan.token('body', (req, res) => JSON.stringify(req.body));
