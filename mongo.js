@@ -8,22 +8,22 @@ if (process.argv.length<3) {
 const password = process.argv[2]
 
 const url =
-  `mongodb+srv://persondb:${password}@atlascluster.iqvqzkp.mongodb.net/?retryWrites=true&w=majority&appName=AtlasApp`
+  `mongodb+srv://notesdb:${password}@atlascluster.iqvqzkp.mongodb.net/phonebook?retryWrites=true&w=majority&appName=AtlasApp`
 
 mongoose.set('strictQuery',false)
 mongoose.connect(url)
 
 const noteSchema = new mongoose.Schema({
-  id: number,
-  name: string,
-  number: number,
+  id: Number,
+  name: String,
+  number: Number,
 })
 
 const Person = mongoose.model('Person', noteSchema)
 
 const person = new Person({
   id: 12,
-  name: Test,
+  name: "Test",
   number: 11111111,
 })
 
