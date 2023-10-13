@@ -13,28 +13,33 @@ const url =
 mongoose.set('strictQuery',false)
 mongoose.connect(url)
 
-const noteSchema = new mongoose.Schema({
-  id: Number,
+const personSchema = new mongoose.Schema({
   name: String,
-  number: Number,
+  number: String,
 })
 
-const Person = mongoose.model('Person', noteSchema)
+const Person = mongoose.model('Person', personSchema)
 
 const person = new Person({
   id: 12,
   name: "Test",
-  number: 11111111,
+  number: "11111111",
 })
 
-person.save().then(result => {
+/*person.save().then(result => {
   console.log('new person saved!')
   mongoose.connection.close()
-})
+})*/
 
-/*Person.find({}).then(result => {
+Person.find({}).then(result => {
   result.forEach(person => {
     console.log(person)
   })
+  mongoose.connection.close()
+})
+
+/*Person.deleteOne( { id: "6524498663719212b5626c1a" } )
+.then(function(){
+  console.log("Person deleted")
   mongoose.connection.close()
 })*/
