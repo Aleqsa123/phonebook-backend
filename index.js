@@ -21,11 +21,16 @@ app.get('/', (request, response) => {
 })
 
 app.get('/info', (request, response) => {
-    const count = persons.length;
-    const date = Date();
-    response.send(`<p>Phonebook has info for ${count} people</p>
-                    <p>${date}</p>`)
+  Person.find({})
+  .then(people => {
+    response.send(`<p> Phonebook has info for ${people.length} people</p>
+    <p>${Date()}</p>`)
   })
+  .catch(error => next(error))
+
+})
+
+
   
 app.get('/api/persons', (request, response) => {
   Person.find({}).then(people => {
