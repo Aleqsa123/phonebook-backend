@@ -9,7 +9,6 @@ const app = express();
 
 app.use(express.json());
 app.use(cors());
-
 app.use(express.static('build'));
 
 //Morgan API request logger
@@ -28,7 +27,6 @@ app.get('/info', (request, response) => {
                     <p>${date}</p>`)
   })
   
-
 app.get('/api/persons', (request, response) => {
   Person.find({}).then(people => {
     response.json(people)
@@ -46,11 +44,14 @@ app.get('/api/persons/:id', (request, response) => {
   }
 })
 
+//DELETE request - removes individual person
 app.delete('/api/persons/:id', (request, response) => {
-  Person.deleteOne( { id: request.params.id } ).then((result)=>{
-    console.log("Person deleted", result)
-    response.status(204).end()
-  })
+  Person.findByIdAndRemove(request.params.id)
+    .then(result => {
+      console.log(`person deleted successfully`);
+      response.status(204).end()
+    })
+    //.catch(error => next(error))
 })
 
 app.post('/api/persons', (request, response) => {
