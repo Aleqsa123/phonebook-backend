@@ -16,28 +16,23 @@ morgan.token('body', (req, res) => JSON.stringify(req.body));
 app.use(morgan(':method :url :status :response-time ms - :res[content-length] :body'));
 
 //Routes
-app.get('/', (request, response) => {
-  response.send('<h1>Hello World!</h1>')
-})
 
-app.get('/info', (request, response) => {
+//GET - get info about people DB for today
+app.get('/info', (request, response, next) => {
   Person.find({})
   .then(people => {
     response.send(`<p> Phonebook has info for ${people.length} people</p>
     <p>${Date()}</p>`)
   })
   .catch(error => next(error))
-
 })
 
-
-  
-app.get('/api/persons', (request, response) => {
+//GET - get all the people from DB
+app.get('/api/persons', (request, response, next) => {
   Person.find({}).then(people => {
     response.json(people)
   })
   .catch(error => next(error))
-
 })
 
 //GET - get individual person
@@ -64,7 +59,8 @@ app.delete('/api/persons/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
-app.post('/api/persons', (request, response) => {
+//POST - add new person to DB
+app.post('/api/persons', (request, response, next) => {
   const body = request.body;
 
   if (body.name === undefined) {
@@ -97,6 +93,22 @@ app.post('/api/persons', (request, response) => {
       error: 'name must be unique' 
     })
   }*/
+
+//PUT request - changes phone-number of the existing person
+app.put('/api/persons/:id', (request, response, next) => {
+  const body = request.body
+  
+  const updatedPerson = {
+    name: body.name,
+    number: body.number,
+  }
+
+  Person.findByIdAndUpdate(request.params.id, updatedPerson, { new: true })
+    .then(updatedPerson => {
+      response.json(updatedPerson)
+    })
+    .catch(error => next(error))
+})
 
 //Middleware after routes
 const unknownEndpoint = (request, response) => {
