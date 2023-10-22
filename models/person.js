@@ -20,7 +20,19 @@ mongoose.connect(url)
       minLength: 3,
       required: true
     },
-    number: String,
+    number: {
+      type: String,
+      minLength: 8,
+      maxLength: 10,
+      //This is custom validator:
+      validate: {
+        validator: function(v) {
+          return /\d{2}-\d{6}/.test(v);
+        },
+        message: props => `${props.value} is not a valid phone number!`
+      },
+      required: [true, 'User phone number required']
+    }
   })
   
 
